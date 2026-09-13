@@ -1,5 +1,6 @@
 /* ==========================================================
-   CORE — Sound, Storage, Theme, Toast, Cursor, Particles
+   CORE — Sound, Storage, Theme, Toast, Cursor, Particles, Haptic
+   Account Receivable 101 · Firhan Fahamzha · ATC 2026
    ========================================================== */
 (function (window) {
   'use strict';
@@ -72,7 +73,7 @@
     return isDark;
   };
 
-  /* ============ SOUND (Web Audio API) ============ */
+  /* ============ AUDIO CONTEXT ============ */
   let audioCtx = null;
   let soundEnabled = STORAGE.get('sound', true);
 
@@ -103,11 +104,26 @@
     osc.stop(t + duration + 0.02);
   }
 
+  /* ============ HAPTIC / VIBRATE ============ */
+  AR.vibrate = function (pattern) {
+    if (!('vibrate' in navigator)) return;
+    if (STORAGE.get('haptic', true) === false) return;
+    try { navigator.vibrate(pattern); } catch (e) {}
+  };
+  AR.setHaptic = function (enabled) {
+    STORAGE.set('haptic', !!enabled);
+  };
+  AR.isHapticEnabled = function () {
+    return STORAGE.get('haptic', true) !== false;
+  };
+
+  /* ============ SOUND ============ */
   AR.sound = {
     play(type) {
       switch (type) {
         case 'click':
           beep(660, 0.08, 'sine', 0.05);
+          AR.vibrate(15);
           break;
         case 'hover':
           beep(880, 0.04, 'sine', 0.02);
@@ -116,23 +132,38 @@
           beep(523, 0.12, 'sine', 0.08);
           beep(659, 0.12, 'sine', 0.08, 0.08);
           beep(784, 0.18, 'sine', 0.08, 0.16);
+          AR.vibrate([40, 30, 40]);
           break;
         case 'wrong':
           beep(220, 0.18, 'sawtooth', 0.07);
           beep(180, 0.22, 'sawtooth', 0.06, 0.1);
+          AR.vibrate([100, 50, 100, 50, 200]);
           break;
         case 'success':
           beep(523, 0.1, 'triangle', 0.09);
           beep(659, 0.1, 'triangle', 0.09, 0.1);
           beep(784, 0.1, 'triangle', 0.09, 0.2);
           beep(1047, 0.3, 'triangle', 0.1, 0.3);
+          AR.vibrate([30, 20, 30, 20, 80]);
           break;
         case 'jingle':
           [523, 659, 784, 1047, 1319].forEach((f, i) =>
             beep(f, 0.22, 'triangle', 0.09, i * 0.13));
+          AR.vibrate([50, 40, 50, 40, 50, 40, 150]);
           break;
         case 'drop':
           beep(440, 0.06, 'square', 0.06);
+          AR.vibrate(25);
+          break;
+        case 'warn':
+          beep(330, 0.1, 'square', 0.06);
+          beep(280, 0.12, 'square', 0.06, 0.08);
+          AR.vibrate([60, 40, 60]);
+          break;
+        case 'alert':
+          beep(220, 0.2, 'sawtooth', 0.08);
+          beep(180, 0.28, 'sawtooth', 0.08, 0.12);
+          AR.vibrate([150, 80, 150, 80, 200]);
           break;
         default:
           beep(660, 0.08, 'sine', 0.05);
@@ -152,7 +183,7 @@
     }
   };
 
-  // unlock audio on first interaction
+  // Unlock audio context on first interaction
   ['click', 'keydown', 'touchstart'].forEach(ev =>
     window.addEventListener(ev, () => ensureCtx(), { once: true, passive: true })
   );
@@ -320,7 +351,6 @@
             ctx.stroke();
           }
         }
-        // mouse interaction
         const mdx = particles[i].x - mouse.x;
         const mdy = particles[i].y - mouse.y;
         const md = Math.sqrt(mdx * mdx + mdy * mdy);
