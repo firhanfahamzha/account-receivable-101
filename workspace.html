@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workspace · Account Receivable 101</title>
+<meta name="description" content="Roleplay jadi staf AR di PT Tekno Mandiri Jaya. Klasifikasi piutang, aging schedule, jurnal, dan NRV.">
+<meta name="theme-color" content="#7c3aed">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💼</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/workspace.css">
+</head>
+<body class="workspace-page">
+
+<div class="loader">
+  <div class="loader-mark">WORKSPACE AR</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-text">Menyiapkan workspace...</div>
+</div>
+
+<div class="scroll-progress"><div class="scroll-bar"></div></div>
+
+<div class="bg-aurora" aria-hidden="true">
+  <div class="aurora-blob b1"></div>
+  <div class="aurora-blob b2"></div>
+  <div class="aurora-blob b3"></div>
+</div>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <div class="brand">
+    <a href="#" id="home-btn" style="display:contents"><div class="brand-mark"><i class="fas fa-briefcase"></i></div></a>
+    <div class="brand-text">
+      Workspace AR
+      <small>PT Tekno Mandiri Jaya</small>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <a href="index.html" class="icon-btn" title="Hub"><i class="fas fa-house"></i></a>
+    <button class="icon-btn" data-action="sound" title="Suara"><i class="fas fa-volume-high"></i></button>
+    <button class="icon-btn" data-action="theme" title="Tema"><i class="fas fa-moon"></i></button>
+    <button class="icon-btn" data-action="share" title="Bagikan"><i class="fas fa-share-nodes"></i></button>
+  </div>
+</header>
+
+<main class="container" style="padding-top:80px">
+
+  <!-- AUTH -->
+  <section id="view-auth" class="view-section active">
+    <div class="auth-box">
+      <span class="lock-emoji">🔐</span>
+      <h2>Otentikasi Keamanan</h2>
+      <p style="color:var(--text-muted);font-size:0.9rem">Jawab pertanyaan untuk mengakses workspace.</p>
+      <div class="question">"Piutang adalah ___"</div>
+      <input type="password" id="auth-pwd" placeholder="••••" maxlength="6" autocomplete="off">
+      <button class="btn btn-primary" id="auth-btn" style="width:100%;margin-top:18px">
+        <i class="fas fa-key"></i> Akses Sistem
+      </button>
+      <p style="margin-top:14px;font-size:0.75rem;color:var(--text-muted)">Petunjuk: 4 huruf · kata kunci dari judul materi</p>
+    </div>
+  </section>
+
+  <!-- ONBOARD -->
+  <section id="view-onboard" class="view-section">
+    <div class="onboard">
+      <span class="big-emoji">📋</span>
+      <h2>Mulai Proyek Baru</h2>
+      <p class="lead">Isi data diri &amp; perusahaan. Bisa diganti sesuai kebutuhan kelas.</p>
+      <div class="onboard-form">
+        <div class="form-group">
+          <label>Nama Penyusun</label>
+          <input type="text" id="in-name" placeholder="Misal: Budi Santoso">
+        </div>
+        <div class="form-group">
+          <label>Nama Perusahaan</label>
+          <input type="text" id="in-company" placeholder="Misal: PT Tekno Mandiri Jaya" value="PT Tekno Mandiri Jaya">
+        </div>
+        <div class="form-group">
+          <label>Periode Laporan</label>
+          <input type="text" id="in-period" placeholder="Misal: 31 Desember 2025" value="31 Desember 2025">
+        </div>
+        <button class="btn btn-primary" id="onboard-btn" style="width:100%;margin-top:8px">
+          <i class="fas fa-rocket"></i> Buat Proyek &amp; Masuk
+        </button>
+        <button class="btn btn-ghost" onclick="location.href='index.html'" style="width:100%;margin-top:8px">
+          <i class="fas fa-arrow-left"></i> Kembali ke Hub
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS LIST -->
+  <section id="view-projects" class="view-section">
+    <div class="projects-list" id="projects-list"></div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section id="view-dashboard" class="view-section">
+    <div class="ws-header">
+      <div>
+        <h2>Dashboard Analisis: <span class="company-name" id="dash-company">—</span></h2>
+        <p class="meta" id="dash-meta">—</p>
+      </div>
+    </div>
+    <div class="bento" id="bento"></div>
+    <div class="export-cta" id="export-cta-wrap" style="display:none">
+      <h3>🎉 Semua modul selesai!</h3>
+      <p>Portofolio siap diekspor jadi PDF. Cocok buat portofolio LinkedIn / tugas sekolah.</p>
+      <button class="btn btn-primary" id="export-btn" style="padding:14px 32px;font-size:1rem">
+        <i class="fas fa-file-pdf"></i> Ekspor Portofolio PDF
+      </button>
+    </div>
+  </section>
+
+  <!-- MOD 1 -->
+  <section id="view-mod1" class="view-section">
+    <div class="module-head">
+      <button class="back-btn" data-back-dash><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <h2>1. Klasifikasi Piutang</h2>
+        <p class="sub">Pisahkan piutang usaha, wesel, dan lain-lain.</p>
+      </div>
+    </div>
+    <div class="ws-table-wrap">
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>Nama Klien / Tagihan</th>
+            <th>Nominal (Rp)</th>
+            <th>Klasifikasi</th>
+            <th style="width:60px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="m1-body"></tbody>
+      </table>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-ghost" id="m1-add"><i class="fas fa-plus"></i> Tambah Baris</button>
+      <button class="btn btn-primary" id="m1-save"><i class="fas fa-save"></i> Simpan &amp; Kembali</button>
+    </div>
+  </section>
+
+  <!-- MOD 2 -->
+  <section id="view-mod2" class="view-section">
+    <div class="module-head">
+      <button class="back-btn" data-back-dash><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <h2>2. Pengukuran Piutang Awal</h2>
+        <p class="sub">Isi total piutang bruto &amp; syarat termin.</p>
+      </div>
+    </div>
+    <div class="onboard" style="max-width:600px;margin:0 auto;text-align:left">
+      <div class="form-group">
+        <label>Total Piutang Usaha Bruto (Rp)</label>
+        <input type="text" id="m2-bruto" placeholder="0">
+      </div>
+      <div class="form-group">
+        <label>Syarat Pembayaran (Termin)</label>
+        <input type="text" id="m2-termin" placeholder="Misal: 2/10, n/30">
+      </div>
+      <div class="toolbar" style="justify-content:flex-end">
+        <button class="btn btn-primary" id="m2-save"><i class="fas fa-save"></i> Simpan &amp; Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOD 3 -->
+  <section id="view-mod3" class="view-section">
+    <div class="module-head">
+      <button class="back-btn" data-back-dash><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <h2>3. Analisis Umur Piutang</h2>
+        <p class="sub">Drag chip % ke kolom Alokasi. Isi jumlah hari untuk kategori menunggak.</p>
+      </div>
+    </div>
+    <div class="rules-panel">
+      <h3><i class="fas fa-brain" style="color:var(--violet)"></i> Kebijakan ECL Perusahaan</h3>
+      <div class="rules-list">
+        • Belum Jatuh Tempo = <span class="pct">1%</span><br>
+        • Menunggak 1 – 30 Hari = <span class="pct">3%</span><br>
+        • Menunggak 31 – 60 Hari = <span class="pct">5%</span><br>
+        • Menunggak &gt; 60 Hari = <span class="pct">10%</span><br>
+        • Pailit = <span class="pct danger">100%</span>
+      </div>
+    </div>
+    <div class="chip-container" id="m3-chips"></div>
+    <div class="ws-table-wrap">
+      <table class="ws-table">
+        <thead>
+          <tr>
+            <th>Pelanggan</th>
+            <th>Kategori Umur</th>
+            <th>Saldo (Rp)</th>
+            <th class="text-center">Alokasi %</th>
+            <th>Estimasi (Rp)</th>
+            <th style="width:50px">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="m3-body"></tbody>
+      </table>
+    </div>
+    <div class="total-bar">
+      Total Cadangan: <span class="val" id="m3-total">Rp 0</span>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-ghost" id="m3-add"><i class="fas fa-plus"></i> Tambah Pelanggan</button>
+      <button class="btn btn-primary" id="m3-save"><i class="fas fa-save"></i> Simpan &amp; Kembali</button>
+    </div>
+  </section>
+
+  <!-- MOD 4 -->
+  <section id="view-mod4" class="view-section">
+    <div class="module-head">
+      <button class="back-btn" data-back-dash><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <h2>4. Penjurnalan Siklus Piutang</h2>
+        <p class="sub">Smart Journal Builder — isi sisi debit atau kredit saja, otomatis balance.</p>
+      </div>
+    </div>
+    <div class="journal-workspace">
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:16px">
+        <div class="form-group" style="margin:0">
+          <label>Tanggal</label>
+          <input type="date" id="m4-date" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);font-size:0.88rem">
+        </div>
+        <div class="form-group" style="margin:0">
+          <label>Keterangan</label>
+          <input type="text" id="m4-desc" placeholder="Misal: Penyesuaian CKPN 31 Desember" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;background:var(--surface);font-size:0.88rem">
+        </div>
+      </div>
+      <div class="j-row-head">
+        <div>AKUN PERKIRAAN</div>
+        <div>DEBIT (Rp)</div>
+        <div>KREDIT (Rp)</div>
+        <div></div>
+      </div>
+      <div id="m4-rows"></div>
+      <button class="btn btn-ghost" id="m4-add-row" style="margin-top:8px">
+        <i class="fas fa-plus"></i> Tambah Baris Akun
+      </button>
+      <div class="toolbar" style="justify-content:flex-end">
+        <button class="btn btn-primary" id="m4-save-entry">
+          <i class="fas fa-plus-circle"></i> Simpan Jurnal Ini
+        </button>
+      </div>
+    </div>
+    <h3 style="font-size:1rem;margin:20px 0 12px;display:flex;align-items:center;gap:8px">
+      <i class="fas fa-history" style="color:var(--violet)"></i> Daftar Jurnal Tersimpan
+    </h3>
+    <div id="m4-saved"></div>
+    <div class="toolbar" style="justify-content:flex-end">
+      <button class="btn btn-primary" id="m4-save"><i class="fas fa-save"></i> Modul Jurnal Selesai</button>
+    </div>
+  </section>
+
+  <!-- MOD 5 -->
+  <section id="view-mod5" class="view-section">
+    <div class="module-head">
+      <button class="back-btn" data-back-dash><i class="fas fa-arrow-left"></i></button>
+      <div>
+        <h2>5. Interpretasi NRV</h2>
+        <p class="sub">Sajikan NRV di laporan posisi keuangan &amp; tulis interpretasi likuiditas.</p>
+      </div>
+    </div>
+    <div class="nrv-grid">
+      <div class="financial-report">
+        <div class="report-head">
+          Laporan Posisi Keuangan (Parsial)
+          <small>Aset Lancar</small>
+        </div>
+        <div class="report-body">
+          <div class="report-row">
+            <span>Piutang Usaha</span>
+            <input type="text" id="m5-ar" placeholder="0">
+          </div>
+          <div class="report-row deduct">
+            <span>Dikurangi: CKPN</span>
+            <input type="text" id="m5-all" placeholder="0">
+          </div>
+          <div class="report-row total">
+            <span>Nilai Realisasi Bersih (NRV)</span>
+            <span class="val" id="m5-nrv">Rp 0</span>
+          </div>
+        </div>
+      </div>
+      <div class="interpret-box">
+        <h3><i class="fas fa-pen-nib"></i> Analisa &amp; Interpretasi</h3>
+        <p class="hint">Tuliskan arti dari angka NRV yang kamu temukan. Apa maknanya bagi likuiditas dan laporan keuangan perusahaan?</p>
+        <textarea id="m5-desc" placeholder="Contoh: NRV sebesar Rp xxx mencerminkan nilai kas bersih yang benar-benar diharapkan dapat ditagih..."></textarea>
+      </div>
+    </div>
+    <div class="toolbar" style="justify-content:flex-end">
+      <button class="btn btn-primary" id="m5-save"><i class="fas fa-check-double"></i> Kunci Laporan &amp; Selesai</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div>Workspace Roleplay · <strong>Accounting Teaching Challenge 2026</strong></div>
+  <div class="wm"><i class="fas fa-user-pen"></i> Firhan Fahamzha · ITB Asia Malang</div>
+</footer>
+
+<script src="js/core.js"></script>
+<script src="js/space.js"></script>
+<script src="js/workspace.js"></script>
+</body>
+</html>
