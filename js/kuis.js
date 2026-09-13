@@ -190,24 +190,28 @@
     startTimer();
   }
 
-  function startTimer() {
-    stopTimer();
-    const tick = () => {
-      timeLeft--;
-      const el = document.getElementById('q-time');
-      const wrap = document.getElementById('q-timer');
-      if (el) el.textContent = timeLeft;
-      if (wrap) {
-        wrap.classList.toggle('warn', timeLeft <= 15 && timeLeft > 8);
-        wrap.classList.toggle('danger', timeLeft <= 8);
-      }
-      if (timeLeft <= 0) {
-        stopTimer();
-        if (!answered) timeUp();
-      }
-    };
-    timerId = setInterval(tick, 1000);
-  }
+ function startTimer() {
+  stopTimer();
+  const tick = () => {
+    timeLeft--;
+    const el = document.getElementById('q-time');
+    const wrap = document.getElementById('q-timer');
+    if (el) el.textContent = timeLeft;
+    if (wrap) {
+      wrap.classList.toggle('warn', timeLeft <= 15 && timeLeft > 8);
+      wrap.classList.toggle('danger', timeLeft <= 8);
+    }
+    // 🔔 Getar di detik kritis
+    if (AR.vibrate && (timeLeft === 8 || timeLeft === 5 || timeLeft === 3)) {
+      AR.vibrate(60);
+    }
+    if (timeLeft <= 0) {
+      stopTimer();
+      if (!answered) timeUp();
+    }
+  };
+  timerId = setInterval(tick, 1000);
+}
 
   function stopTimer() {
     if (timerId) { clearInterval(timerId); timerId = null; }
@@ -221,6 +225,19 @@
       if (i === q.ans) btn.classList.add('reveal-correct');
     });
     history.push({ q: q.q, chosen: -1, correct: q.ans });
+     function timeUp() {
+  answered = true;
+  const q = QUESTIONS[current];
+  document.querySelectorAll('.option').forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === q.ans) btn.classList.add('reveal-correct');
+  });
+  history.push({ q: q.q, chosen: -1, correct: q.ans });
+  AR.vibrate([150, 80, 150]);       // ← getar: alert pattern (lebih kuat dari wrong biasa)
+  AR.sound.play('wrong');
+  AR.toast('Waktu habis!', 'fa-clock', 2000);
+  document.getElementById('q-next').disabled = false;
+}
     AR.sound.play('wrong');
     AR.toast('Waktu habis!', 'fa-clock', 2000);
     document.getElementById('q-next').disabled = false;
