@@ -1,5 +1,5 @@
 /* ==========================================================
-   TANTANGAN — Sortir Cepat + Jurnal Rush
+   TANTANGAN — Sortir Cepat + Jurnal Rush (FIXED)
    ========================================================== */
 (function () {
   'use strict';
@@ -9,7 +9,6 @@
   const $ = s => document.querySelector(s);
   const $$ = s => Array.from(document.querySelectorAll(s));
 
-  /* ============ GAME STATE ============ */
   const state = {
     sortirDone: false,
     sortirBest: AR.storage.get('sortir_best', 0),
@@ -17,7 +16,6 @@
     jrBest: AR.storage.get('jr_best', 0)
   };
 
-  /* ============ CONFETTI ============ */
   function confettiBurst(count = 40) {
     const colors = ['#7c3aed', '#06b6d4', '#f59e0b', '#10b981', '#ec4899'];
     for (let i = 0; i < count; i++) {
@@ -34,7 +32,6 @@
     }
   }
 
-  /* ============ TABS ============ */
   function initTabs() {
     $$('.game-tab').forEach(t => {
       t.addEventListener('click', () => {
@@ -195,14 +192,13 @@
         el.classList.add('dragging');
       });
       el.addEventListener('dragend', () => el.classList.remove('dragging'));
-
-      // Touch fallback: tap to cycle
       el.addEventListener('click', () => {
         AR.toast('Drag kartu ini ke kolom yang tepat', 'fa-hand-pointer', 1500);
       });
       pool.appendChild(el);
     });
-    $('#g1-remain').textContent = g1Remaining.length;
+    const rm = $('#g1-remain');
+    if (rm) rm.textContent = g1Remaining.length;
   }
 
   function setupDropZones() {
@@ -227,7 +223,6 @@
     const chosenCat = zone.dataset.cat;
     const isCorrect = chosenCat === card.cat;
 
-    // Visual feedback di zone
     const item = document.createElement('div');
     item.className = 'zone-item ' + (isCorrect ? 'correct' : 'wrong');
     item.textContent = (isCorrect ? '✓ ' : '✗ ') + card.text;
@@ -250,55 +245,52 @@
       setTimeout(() => { zone.style.boxShadow = ''; }, 300);
     }
 
-    // Remove kartu dari pool
     g1Remaining.splice(idx, 1);
     renderCardsPool();
+    const sc = $('#g1-score');
+    if (sc) sc.textContent = g1Score;
 
-    $('#g1-score').textContent = g1Score;
-
-    if (g1Remaining.length === 0) {
-      endGame1(true);
-    }
+    if (g1Remaining.length === 0) endGame1(true);
   }
 
-function startG1Timer() {
-  g1Timer = setInterval(() => {
-    g1TimeLeft--;
-    $('#g1-time').textContent = g1TimeLeft;
-    const fill = $('#g1-countdown');
-    const pct = (g1TimeLeft / GAME1_TIME) * 100;
-    fill.style.width = pct + '%';
-    fill.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
-    fill.classList.toggle('danger', g1TimeLeft <= 10);
-    const timeBox = $('#g1-time').closest('.stat-box');
-    timeBox.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
-    timeBox.classList.toggle('danger', g1TimeLeft <= 10);
-    // 🔔 Getar di 10, 5, 3, 1 detik
-    if (AR.vibrate && (g1TimeLeft === 10 || g1TimeLeft === 5 || g1TimeLeft === 3 || g1TimeLeft === 1)) {
-      AR.vibrate(80);
-    }
-    if (g1TimeLeft <= 0) endGame1(false);
-  }, 1000);
-}
+  function startG1Timer() {
+    if (g1Timer) clearInterval(g1Timer);
+    g1Timer = setInterval(() => {
+      g1TimeLeft--;
+      const t = $('#g1-time');
+      if (t) t.textContent = g1TimeLeft;
+      const fill = $('#g1-countdown');
+      if (fill) {
+        const pct = (g1TimeLeft / GAME1_TIME) * 100;
+        fill.style.width = pct + '%';
+        fill.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
+        fill.classList.toggle('danger', g1TimeLeft <= 10);
+      }
+      const timeBox = $('#g1-time')?.closest('.stat-box');
+      if (timeBox) {
+        timeBox.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
+        timeBox.classList.toggle('danger', g1TimeLeft <= 10);
+      }
+      if (AR.vibrate && (g1TimeLeft === 10 || g1TimeLeft === 5 || g1TimeLeft === 3 || g1TimeLeft === 1)) {
+        AR.vibrate(80);
+      }
+      if (g1TimeLeft <= 0) endGame1(false);
+    }, 1000);
+  }
 
   function endGame1(allCleared) {
     if (g1Timer) { clearInterval(g1Timer); g1Timer = null; }
-
-    const bestKey = 'sortir_best';
     const prevBest = state.sortirBest;
     if (g1Score > state.sortirBest) {
       state.sortirBest = g1Score;
-      AR.storage.set(bestKey, g1Score);
+      AR.storage.set('sortir_best', g1Score);
     }
-
     state.sortirDone = true;
     AR.storage.set('sortir_done', true);
 
     const emoji = g1Score >= 90 ? '👑' : g1Score >= 70 ? '🏆' : g1Score >= 40 ? '⭐' : '🌱';
     const title = g1Score >= 90 ? 'Luar Biasa!' : g1Score >= 70 ? 'Mantap!' : g1Score >= 40 ? 'Bagus!' : 'Coba Lagi!';
-    const msg = allCleared
-      ? 'Kamu berhasil menyortir semua kartu dalam waktu!'
-      : 'Waktu habis. Semakin cepat makin tinggi skor!';
+    const msg = allCleared ? 'Kamu berhasil menyortir semua kartu dalam waktu!' : 'Waktu habis. Semakin cepat makin tinggi skor!';
 
     $('#game-sortir-stage').innerHTML = `
       <div class="game-result">
@@ -334,7 +326,6 @@ function startG1Timer() {
       AR.sound.play('click');
       document.querySelector('.game-tab[data-game="jr"]').click();
     });
-
     refreshTabBadges();
   }
 
@@ -411,7 +402,7 @@ function startG1Timer() {
   let jrSelD = null;
   let jrSelC = null;
   let jrOrder = [];
-   let jrActive = false;
+  let jrActive = false;   // ← FIX: guard untuk cegah double submit
 
   function renderGame2Intro() {
     $('#game-jr-stage').innerHTML = `
@@ -451,167 +442,153 @@ function startG1Timer() {
     renderJRQuestion();
   }
 
-function renderJRQuestion() {
-  if (jrIdx >= jrOrder.length) { endGame2(); return; }
-  jrActive = true;              // ← tambahan
-  jrSelD = null;
-  jrSelC = null;
-  jrTimeLeft = JR_TIME;
-  const q = jrOrder[jrIdx];
+  function renderJRQuestion() {
+    if (jrIdx >= jrOrder.length) { endGame2(); return; }
+    jrActive = true;
+    jrSelD = null;
+    jrSelC = null;
+    jrTimeLeft = JR_TIME;
+    const q = jrOrder[jrIdx];
 
-  $('#game-jr-stage').innerHTML = `
-    <div class="game-stats">
-      <div class="stat-box">
-        <div class="val" id="jr-num">${jrIdx + 1} / ${jrOrder.length}</div>
-        <div class="lbl">Soal</div>
-      </div>
-      <div class="stat-box success">
-        <div class="val" id="jr-score">${jrScore}</div>
-        <div class="lbl">Skor</div>
-      </div>
-      <div class="stat-box ${jrStreak >= 3 ? 'warn' : ''}">
-        <div class="val"><span class="streak-indicator ${jrStreak >= 3 ? 'hot' : ''}" id="jr-streak"><i class="fas fa-fire"></i> ${jrStreak}</span></div>
-        <div class="lbl">Streak</div>
-      </div>
-      <div class="stat-box" id="jr-time-box">
-        <div class="val" id="jr-time">${jrTimeLeft}</div>
-        <div class="lbl">Detik</div>
-      </div>
-    </div>
-    <div class="countdown-track"><div class="countdown-fill" id="jr-countdown"></div></div>
-    <div class="jr-question">
-      <div class="label">// Transaksi ${jrIdx + 1}</div>
-      <div class="text">${q.text}</div>
-    </div>
-    <div class="jr-answers">
-      <div class="jr-col debit">
-        <h4><i class="fas fa-arrow-down"></i> Pilih Akun Debit</h4>
-        <div class="chips" id="jr-debit">
-          ${q.debit.map(a => `<button class="acc-chip" data-side="d" data-acc="${a}">${a}</button>`).join('')}
+    $('#game-jr-stage').innerHTML = `
+      <div class="game-stats">
+        <div class="stat-box">
+          <div class="val" id="jr-num">${jrIdx + 1} / ${jrOrder.length}</div>
+          <div class="lbl">Soal</div>
+        </div>
+        <div class="stat-box success">
+          <div class="val" id="jr-score">${jrScore}</div>
+          <div class="lbl">Skor</div>
+        </div>
+        <div class="stat-box ${jrStreak >= 3 ? 'warn' : ''}">
+          <div class="val"><span class="streak-indicator ${jrStreak >= 3 ? 'hot' : ''}" id="jr-streak"><i class="fas fa-fire"></i> ${jrStreak}</span></div>
+          <div class="lbl">Streak</div>
+        </div>
+        <div class="stat-box" id="jr-time-box">
+          <div class="val" id="jr-time">${jrTimeLeft}</div>
+          <div class="lbl">Detik</div>
         </div>
       </div>
-      <div class="jr-col credit">
-        <h4><i class="fas fa-arrow-up"></i> Pilih Akun Kredit</h4>
-        <div class="chips" id="jr-credit">
-          ${q.credit.map(a => `<button class="acc-chip" data-side="c" data-acc="${a}">${a}</button>`).join('')}
+      <div class="countdown-track"><div class="countdown-fill" id="jr-countdown"></div></div>
+      <div class="jr-question">
+        <div class="label">// Transaksi ${jrIdx + 1}</div>
+        <div class="text">${q.text}</div>
+      </div>
+      <div class="jr-answers">
+        <div class="jr-col debit">
+          <h4><i class="fas fa-arrow-down"></i> Pilih Akun Debit</h4>
+          <div class="chips" id="jr-debit">
+            ${q.debit.map(a => `<button class="acc-chip" data-side="d" data-acc="${a}">${a}</button>`).join('')}
+          </div>
+        </div>
+        <div class="jr-col credit">
+          <h4><i class="fas fa-arrow-up"></i> Pilih Akun Kredit</h4>
+          <div class="chips" id="jr-credit">
+            ${q.credit.map(a => `<button class="acc-chip" data-side="c" data-acc="${a}">${a}</button>`).join('')}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="jr-feedback" id="jr-fb"></div>
-    <div style="text-align:right">
-      <button class="btn btn-primary" id="jr-submit" disabled>
-        <i class="fas fa-check"></i> Kunci Jawaban
-      </button>
-    </div>
-  `;
+      <div class="jr-feedback" id="jr-fb"></div>
+      <div style="text-align:right">
+        <button class="btn btn-primary" id="jr-submit" disabled>
+          <i class="fas fa-check"></i> Kunci Jawaban
+        </button>
+      </div>
+    `;
 
-  $$('#jr-debit .acc-chip').forEach(c => {
-    c.addEventListener('click', () => {
-      if (!jrActive) return;      // ← guard
-      $$('#jr-debit .acc-chip').forEach(x => x.classList.remove('selected'));
-      c.classList.add('selected');
-      jrSelD = c.dataset.acc;
-      AR.sound.play('click');
-      checkSubmit();
+    $$('#jr-debit .acc-chip').forEach(c => {
+      c.addEventListener('click', () => {
+        if (!jrActive) return;
+        $$('#jr-debit .acc-chip').forEach(x => x.classList.remove('selected'));
+        c.classList.add('selected');
+        jrSelD = c.dataset.acc;
+        AR.sound.play('click');
+        checkSubmit();
+      });
     });
-  });
-  $$('#jr-credit .acc-chip').forEach(c => {
-    c.addEventListener('click', () => {
-      if (!jrActive) return;      // ← guard
-      $$('#jr-credit .acc-chip').forEach(x => x.classList.remove('selected'));
-      c.classList.add('selected');
-      jrSelC = c.dataset.acc;
-      AR.sound.play('click');
-      checkSubmit();
+    $$('#jr-credit .acc-chip').forEach(c => {
+      c.addEventListener('click', () => {
+        if (!jrActive) return;
+        $$('#jr-credit .acc-chip').forEach(x => x.classList.remove('selected'));
+        c.classList.add('selected');
+        jrSelC = c.dataset.acc;
+        AR.sound.play('click');
+        checkSubmit();
+      });
     });
-  });
-  $('#jr-submit').addEventListener('click', () => submitJR(false));
-  startJRTimer();
-}
+    $('#jr-submit').addEventListener('click', () => submitJR(false));
+    startJRTimer();
+  }
 
   function checkSubmit() {
     const btn = $('#jr-submit');
     if (btn) btn.disabled = !(jrSelD && jrSelC);
   }
 
-function startJRTimer() {
-  stopJRTimer();
-  jrTimer = setInterval(() => {
-    if (!jrActive) return;        // ← guard: kalau soal sudah selesai, jangan lanjut
-    jrTimeLeft--;
-    const el = $('#jr-time');
-    const box = $('#jr-time-box');
-    const fill = $('#jr-countdown');
-    if (el) el.textContent = jrTimeLeft;
-    if (fill) {
-      const pct = (jrTimeLeft / JR_TIME) * 100;
-      fill.style.width = pct + '%';
-      fill.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
-      fill.classList.toggle('danger', jrTimeLeft <= 6);
-    }
-    if (box) {
-      box.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
-      box.classList.toggle('danger', jrTimeLeft <= 6);
-    }
-    // 🔔 Getar di detik kritis
-    if (AR.vibrate && (jrTimeLeft === 5 || jrTimeLeft === 3 || jrTimeLeft === 1)) {
-      AR.vibrate(60);
-    }
-    if (jrTimeLeft <= 0) {
-      stopJRTimer();
-      submitJR(true);
-    }
-  }, 1000);
-}
+  function startJRTimer() {
+    stopJRTimer();
+    jrTimer = setInterval(() => {
+      if (!jrActive) return;
+      jrTimeLeft--;
+      const el = $('#jr-time');
+      const box = $('#jr-time-box');
+      const fill = $('#jr-countdown');
+      if (el) el.textContent = jrTimeLeft;
+      if (fill) {
+        const pct = (jrTimeLeft / JR_TIME) * 100;
+        fill.style.width = pct + '%';
+        fill.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
+        fill.classList.toggle('danger', jrTimeLeft <= 6);
+      }
+      if (box) {
+        box.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
+        box.classList.toggle('danger', jrTimeLeft <= 6);
+      }
+      if (AR.vibrate && (jrTimeLeft === 5 || jrTimeLeft === 3 || jrTimeLeft === 1)) {
+        AR.vibrate(60);
+      }
+      if (jrTimeLeft <= 0) {
+        stopJRTimer();
+        submitJR(true);
+      }
+    }, 1000);
+  }
 
   function stopJRTimer() {
     if (jrTimer) { clearInterval(jrTimer); jrTimer = null; }
   }
 
-function submitJR(timedOut = false) {
-  if (!jrActive) return;          // ← guard: jangan submit dua kali
-  jrActive = false;
-  stopJRTimer();
-  const q = jrOrder[jrIdx];
-  const okD = jrSelD === q.ansD;
-  const okC = jrSelC === q.ansC;
-  // 🔑 FIX: kalau user menjawab benar, anggap benar walaupun flag timedOut terpanggil
-  const allCorrect = okD && okC;
+  function submitJR(timedOut = false) {
+    if (!jrActive) return;
+    jrActive = false;
+    stopJRTimer();
+    const q = jrOrder[jrIdx];
+    const okD = jrSelD === q.ansD;
+    const okC = jrSelC === q.ansC;
+    const allCorrect = okD && okC;   // ← FIX: benar walau flag timedOut
 
-  const fb = $('#jr-fb');
-  if (allCorrect) {
-    jrStreak++;
-    if (jrStreak > jrMaxStreak) jrMaxStreak = jrStreak;
-    const base = 10;
-    const streakBonus = Math.min(10, (jrStreak - 1) * 2);
-    const timeBonus = Math.max(0, Math.round(jrTimeLeft / 5));
-    const gained = base + streakBonus + timeBonus;
-    jrScore += gained;
-    jrCorrect++;
-    AR.sound.play('correct');
-    confettiBurst(15);
-    fb.className = 'jr-feedback correct';
-    fb.innerHTML = `✓ Benar! +${gained} poin ${jrStreak >= 3 ? `· 🔥 Streak ${jrStreak}!` : ''}`;
-  } else {
-    jrStreak = 0;
-    AR.sound.play('wrong');
-    fb.className = 'jr-feedback wrong';
-    const reason = timedOut ? '⏰ Waktu habis!' : '✗ Kurang tepat.';
-    fb.innerHTML = `${reason} Jawaban: <strong>Dr. ${q.ansD} / Cr. ${q.ansC}</strong>`;
-  }
+    const fb = $('#jr-fb');
+    if (allCorrect) {
+      jrStreak++;
+      if (jrStreak > jrMaxStreak) jrMaxStreak = jrStreak;
+      const base = 10;
+      const streakBonus = Math.min(10, (jrStreak - 1) * 2);
+      const timeBonus = Math.max(0, Math.round(jrTimeLeft / 5));
+      const gained = base + streakBonus + timeBonus;
+      jrScore += gained;
+      jrCorrect++;
+      AR.sound.play('correct');
+      confettiBurst(15);
+      fb.className = 'jr-feedback correct';
+      fb.innerHTML = `✓ Benar! +${gained} poin ${jrStreak >= 3 ? `· 🔥 Streak ${jrStreak}!` : ''}`;
+    } else {
+      jrStreak = 0;
+      AR.sound.play('wrong');
+      fb.className = 'jr-feedback wrong';
+      const reason = timedOut ? '⏰ Waktu habis!' : '✗ Kurang tepat.';
+      fb.innerHTML = `${reason} Jawaban: <strong>Dr. ${q.ansD} / Cr. ${q.ansC}</strong>`;
+    }
 
-  $$('.acc-chip').forEach(c => c.style.pointerEvents = 'none');
-  const sub = $('#jr-submit');
-  if (sub) sub.disabled = true;
-
-  setTimeout(() => {
-    jrIdx++;
-    if (jrIdx >= jrOrder.length) endGame2();
-    else renderJRQuestion();
-  }, 1600);
-}
-
-    // Disable chips
     $$('.acc-chip').forEach(c => c.style.pointerEvents = 'none');
     const sub = $('#jr-submit');
     if (sub) sub.disabled = true;
@@ -624,13 +601,11 @@ function submitJR(timedOut = false) {
   }
 
   function endGame2() {
-    const maxPossible = jrOrder.length * 30; // perkiraan
     const prevBest = state.jrBest;
     if (jrScore > state.jrBest) {
       state.jrBest = jrScore;
       AR.storage.set('jr_best', jrScore);
     }
-
     state.jrDone = true;
     AR.storage.set('jr_done', true);
 
@@ -672,7 +647,6 @@ function submitJR(timedOut = false) {
       AR.sound.play('click');
       document.querySelector('.game-tab[data-game="sortir"]').click();
     });
-
     refreshTabBadges();
   }
 
@@ -680,7 +654,6 @@ function submitJR(timedOut = false) {
   document.addEventListener('DOMContentLoaded', () => {
     AR.init({ particles: true });
 
-    // Restore state from storage
     if (AR.storage.get('sortir_done', false)) state.sortirDone = true;
     if (AR.storage.get('jr_done', false)) state.jrDone = true;
 
