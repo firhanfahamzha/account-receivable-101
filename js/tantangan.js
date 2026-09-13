@@ -261,21 +261,25 @@
     }
   }
 
-  function startG1Timer() {
-    g1Timer = setInterval(() => {
-      g1TimeLeft--;
-      $('#g1-time').textContent = g1TimeLeft;
-      const fill = $('#g1-countdown');
-      const pct = (g1TimeLeft / GAME1_TIME) * 100;
-      fill.style.width = pct + '%';
-      fill.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
-      fill.classList.toggle('danger', g1TimeLeft <= 10);
-      const timeBox = $('#g1-time').closest('.stat-box');
-      timeBox.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
-      timeBox.classList.toggle('danger', g1TimeLeft <= 10);
-      if (g1TimeLeft <= 0) endGame1(false);
-    }, 1000);
-  }
+function startG1Timer() {
+  g1Timer = setInterval(() => {
+    g1TimeLeft--;
+    $('#g1-time').textContent = g1TimeLeft;
+    const fill = $('#g1-countdown');
+    const pct = (g1TimeLeft / GAME1_TIME) * 100;
+    fill.style.width = pct + '%';
+    fill.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
+    fill.classList.toggle('danger', g1TimeLeft <= 10);
+    const timeBox = $('#g1-time').closest('.stat-box');
+    timeBox.classList.toggle('warn', g1TimeLeft <= 20 && g1TimeLeft > 10);
+    timeBox.classList.toggle('danger', g1TimeLeft <= 10);
+    // 🔔 Getar di 10, 5, 3, 1 detik
+    if (AR.vibrate && (g1TimeLeft === 10 || g1TimeLeft === 5 || g1TimeLeft === 3 || g1TimeLeft === 1)) {
+      AR.vibrate(80);
+    }
+    if (g1TimeLeft <= 0) endGame1(false);
+  }, 1000);
+}
 
   function endGame1(allCleared) {
     if (g1Timer) { clearInterval(g1Timer); g1Timer = null; }
