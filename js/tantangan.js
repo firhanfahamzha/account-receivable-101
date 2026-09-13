@@ -407,6 +407,7 @@
   let jrSelD = null;
   let jrSelC = null;
   let jrOrder = [];
+   let jrActive = false;
 
   function renderGame2Intro() {
     $('#game-jr-stage').innerHTML = `
@@ -446,140 +447,165 @@
     renderJRQuestion();
   }
 
-  function renderJRQuestion() {
-    if (jrIdx >= jrOrder.length) { endGame2(); return; }
-    jrSelD = null;
-    jrSelC = null;
-    jrTimeLeft = JR_TIME;
-    const q = jrOrder[jrIdx];
+function renderJRQuestion() {
+  if (jrIdx >= jrOrder.length) { endGame2(); return; }
+  jrActive = true;              // ← tambahan
+  jrSelD = null;
+  jrSelC = null;
+  jrTimeLeft = JR_TIME;
+  const q = jrOrder[jrIdx];
 
-    $('#game-jr-stage').innerHTML = `
-      <div class="game-stats">
-        <div class="stat-box">
-          <div class="val" id="jr-num">${jrIdx + 1} / ${jrOrder.length}</div>
-          <div class="lbl">Soal</div>
-        </div>
-        <div class="stat-box success">
-          <div class="val" id="jr-score">${jrScore}</div>
-          <div class="lbl">Skor</div>
-        </div>
-        <div class="stat-box ${jrStreak >= 3 ? 'warn' : ''}">
-          <div class="val"><span class="streak-indicator ${jrStreak >= 3 ? 'hot' : ''}" id="jr-streak"><i class="fas fa-fire"></i> ${jrStreak}</span></div>
-          <div class="lbl">Streak</div>
-        </div>
-        <div class="stat-box" id="jr-time-box">
-          <div class="val" id="jr-time">${jrTimeLeft}</div>
-          <div class="lbl">Detik</div>
+  $('#game-jr-stage').innerHTML = `
+    <div class="game-stats">
+      <div class="stat-box">
+        <div class="val" id="jr-num">${jrIdx + 1} / ${jrOrder.length}</div>
+        <div class="lbl">Soal</div>
+      </div>
+      <div class="stat-box success">
+        <div class="val" id="jr-score">${jrScore}</div>
+        <div class="lbl">Skor</div>
+      </div>
+      <div class="stat-box ${jrStreak >= 3 ? 'warn' : ''}">
+        <div class="val"><span class="streak-indicator ${jrStreak >= 3 ? 'hot' : ''}" id="jr-streak"><i class="fas fa-fire"></i> ${jrStreak}</span></div>
+        <div class="lbl">Streak</div>
+      </div>
+      <div class="stat-box" id="jr-time-box">
+        <div class="val" id="jr-time">${jrTimeLeft}</div>
+        <div class="lbl">Detik</div>
+      </div>
+    </div>
+    <div class="countdown-track"><div class="countdown-fill" id="jr-countdown"></div></div>
+    <div class="jr-question">
+      <div class="label">// Transaksi ${jrIdx + 1}</div>
+      <div class="text">${q.text}</div>
+    </div>
+    <div class="jr-answers">
+      <div class="jr-col debit">
+        <h4><i class="fas fa-arrow-down"></i> Pilih Akun Debit</h4>
+        <div class="chips" id="jr-debit">
+          ${q.debit.map(a => `<button class="acc-chip" data-side="d" data-acc="${a}">${a}</button>`).join('')}
         </div>
       </div>
-      <div class="countdown-track"><div class="countdown-fill" id="jr-countdown"></div></div>
-      <div class="jr-question">
-        <div class="label">// Transaksi ${jrIdx + 1}</div>
-        <div class="text">${q.text}</div>
-      </div>
-      <div class="jr-answers">
-        <div class="jr-col debit">
-          <h4><i class="fas fa-arrow-down"></i> Pilih Akun Debit</h4>
-          <div class="chips" id="jr-debit">
-            ${q.debit.map(a => `<button class="acc-chip" data-side="d" data-acc="${a}">${a}</button>`).join('')}
-          </div>
-        </div>
-        <div class="jr-col credit">
-          <h4><i class="fas fa-arrow-up"></i> Pilih Akun Kredit</h4>
-          <div class="chips" id="jr-credit">
-            ${q.credit.map(a => `<button class="acc-chip" data-side="c" data-acc="${a}">${a}</button>`).join('')}
-          </div>
+      <div class="jr-col credit">
+        <h4><i class="fas fa-arrow-up"></i> Pilih Akun Kredit</h4>
+        <div class="chips" id="jr-credit">
+          ${q.credit.map(a => `<button class="acc-chip" data-side="c" data-acc="${a}">${a}</button>`).join('')}
         </div>
       </div>
-      <div class="jr-feedback" id="jr-fb"></div>
-      <div style="text-align:right">
-        <button class="btn btn-primary" id="jr-submit" disabled>
-          <i class="fas fa-check"></i> Kunci Jawaban
-        </button>
-      </div>
-    `;
+    </div>
+    <div class="jr-feedback" id="jr-fb"></div>
+    <div style="text-align:right">
+      <button class="btn btn-primary" id="jr-submit" disabled>
+        <i class="fas fa-check"></i> Kunci Jawaban
+      </button>
+    </div>
+  `;
 
-    $$('#jr-debit .acc-chip').forEach(c => {
-      c.addEventListener('click', () => {
-        $$('#jr-debit .acc-chip').forEach(x => x.classList.remove('selected'));
-        c.classList.add('selected');
-        jrSelD = c.dataset.acc;
-        AR.sound.play('click');
-        checkSubmit();
-      });
+  $$('#jr-debit .acc-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      if (!jrActive) return;      // ← guard
+      $$('#jr-debit .acc-chip').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected');
+      jrSelD = c.dataset.acc;
+      AR.sound.play('click');
+      checkSubmit();
     });
-    $$('#jr-credit .acc-chip').forEach(c => {
-      c.addEventListener('click', () => {
-        $$('#jr-credit .acc-chip').forEach(x => x.classList.remove('selected'));
-        c.classList.add('selected');
-        jrSelC = c.dataset.acc;
-        AR.sound.play('click');
-        checkSubmit();
-      });
+  });
+  $$('#jr-credit .acc-chip').forEach(c => {
+    c.addEventListener('click', () => {
+      if (!jrActive) return;      // ← guard
+      $$('#jr-credit .acc-chip').forEach(x => x.classList.remove('selected'));
+      c.classList.add('selected');
+      jrSelC = c.dataset.acc;
+      AR.sound.play('click');
+      checkSubmit();
     });
-    $('#jr-submit').addEventListener('click', submitJR);
-    startJRTimer();
-  }
+  });
+  $('#jr-submit').addEventListener('click', () => submitJR(false));
+  startJRTimer();
+}
 
   function checkSubmit() {
     const btn = $('#jr-submit');
     if (btn) btn.disabled = !(jrSelD && jrSelC);
   }
 
-  function startJRTimer() {
-    stopJRTimer();
-    jrTimer = setInterval(() => {
-      jrTimeLeft--;
-      const el = $('#jr-time');
-      const box = $('#jr-time-box');
-      const fill = $('#jr-countdown');
-      if (el) el.textContent = jrTimeLeft;
-      if (fill) {
-        const pct = (jrTimeLeft / JR_TIME) * 100;
-        fill.style.width = pct + '%';
-        fill.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
-        fill.classList.toggle('danger', jrTimeLeft <= 6);
-      }
-      if (box) {
-        box.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
-        box.classList.toggle('danger', jrTimeLeft <= 6);
-      }
-      if (jrTimeLeft <= 0) submitJR(true);
-    }, 1000);
-  }
+function startJRTimer() {
+  stopJRTimer();
+  jrTimer = setInterval(() => {
+    if (!jrActive) return;        // ← guard: kalau soal sudah selesai, jangan lanjut
+    jrTimeLeft--;
+    const el = $('#jr-time');
+    const box = $('#jr-time-box');
+    const fill = $('#jr-countdown');
+    if (el) el.textContent = jrTimeLeft;
+    if (fill) {
+      const pct = (jrTimeLeft / JR_TIME) * 100;
+      fill.style.width = pct + '%';
+      fill.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
+      fill.classList.toggle('danger', jrTimeLeft <= 6);
+    }
+    if (box) {
+      box.classList.toggle('warn', jrTimeLeft <= 12 && jrTimeLeft > 6);
+      box.classList.toggle('danger', jrTimeLeft <= 6);
+    }
+    // 🔔 Getar di detik kritis
+    if (AR.vibrate && (jrTimeLeft === 5 || jrTimeLeft === 3 || jrTimeLeft === 1)) {
+      AR.vibrate(60);
+    }
+    if (jrTimeLeft <= 0) {
+      stopJRTimer();
+      submitJR(true);
+    }
+  }, 1000);
+}
 
   function stopJRTimer() {
     if (jrTimer) { clearInterval(jrTimer); jrTimer = null; }
   }
 
-  function submitJR(timedOut = false) {
-    stopJRTimer();
-    const q = jrOrder[jrIdx];
-    const okD = jrSelD === q.ansD;
-    const okC = jrSelC === q.ansC;
-    const allCorrect = okD && okC && !timedOut;
+function submitJR(timedOut = false) {
+  if (!jrActive) return;          // ← guard: jangan submit dua kali
+  jrActive = false;
+  stopJRTimer();
+  const q = jrOrder[jrIdx];
+  const okD = jrSelD === q.ansD;
+  const okC = jrSelC === q.ansC;
+  // 🔑 FIX: kalau user menjawab benar, anggap benar walaupun flag timedOut terpanggil
+  const allCorrect = okD && okC;
 
-    const fb = $('#jr-fb');
-    if (allCorrect) {
-      jrStreak++;
-      if (jrStreak > jrMaxStreak) jrMaxStreak = jrStreak;
-      const base = 10;
-      const streakBonus = Math.min(10, (jrStreak - 1) * 2);
-      const timeBonus = Math.max(0, Math.round(jrTimeLeft / 5));
-      const gained = base + streakBonus + timeBonus;
-      jrScore += gained;
-      jrCorrect++;
-      AR.sound.play('correct');
-      confettiBurst(15);
-      fb.className = 'jr-feedback correct';
-      fb.innerHTML = `✓ Benar! +${gained} poin ${jrStreak >= 3 ? `· 🔥 Streak ${jrStreak}!` : ''}`;
-    } else {
-      jrStreak = 0;
-      AR.sound.play('wrong');
-      fb.className = 'jr-feedback wrong';
-      const reason = timedOut ? '⏰ Waktu habis!' : '✗ Kurang tepat.';
-      fb.innerHTML = `${reason} Jawaban: <strong>Dr. ${q.ansD} / Cr. ${q.ansC}</strong>`;
-    }
+  const fb = $('#jr-fb');
+  if (allCorrect) {
+    jrStreak++;
+    if (jrStreak > jrMaxStreak) jrMaxStreak = jrStreak;
+    const base = 10;
+    const streakBonus = Math.min(10, (jrStreak - 1) * 2);
+    const timeBonus = Math.max(0, Math.round(jrTimeLeft / 5));
+    const gained = base + streakBonus + timeBonus;
+    jrScore += gained;
+    jrCorrect++;
+    AR.sound.play('correct');
+    confettiBurst(15);
+    fb.className = 'jr-feedback correct';
+    fb.innerHTML = `✓ Benar! +${gained} poin ${jrStreak >= 3 ? `· 🔥 Streak ${jrStreak}!` : ''}`;
+  } else {
+    jrStreak = 0;
+    AR.sound.play('wrong');
+    fb.className = 'jr-feedback wrong';
+    const reason = timedOut ? '⏰ Waktu habis!' : '✗ Kurang tepat.';
+    fb.innerHTML = `${reason} Jawaban: <strong>Dr. ${q.ansD} / Cr. ${q.ansC}</strong>`;
+  }
+
+  $$('.acc-chip').forEach(c => c.style.pointerEvents = 'none');
+  const sub = $('#jr-submit');
+  if (sub) sub.disabled = true;
+
+  setTimeout(() => {
+    jrIdx++;
+    if (jrIdx >= jrOrder.length) endGame2();
+    else renderJRQuestion();
+  }, 1600);
+}
 
     // Disable chips
     $$('.acc-chip').forEach(c => c.style.pointerEvents = 'none');
