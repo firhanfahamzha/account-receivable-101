@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Receivable 101 · Piutang, ECL & Likuiditas</title>
+
+  <!-- SEO & Sharing -->
+  <meta name="description" content="Belajar siklus piutang, Expected Credit Loss (ECL), dan Nilai Realisasi Bersih (NRV) lewat roleplay interaktif sebagai staf AR. Media pembelajaran akuntansi keuangan untuk SMK Kelas XI.">
+  <meta name="theme-color" content="#7c3aed">
+  <meta property="og:title" content="Account Receivable 101">
+  <meta property="og:description" content="Dari Faktur ke Neraca — perjalanan seorang staf AR. Roleplay interaktif siklus piutang & ECL.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1200&h=630&fit=crop">
+
+  <!-- Favicon emoji -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/hub.css">
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div class="loader">
+    <div class="loader-mark">ACCOUNT RECEIVABLE 101</div>
+    <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+    <div class="loader-text">Memuat aset...</div>
+  </div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="scroll-progress"><div class="scroll-bar"></div></div>
+
+  <!-- AURORA BG -->
+  <div class="bg-aurora" aria-hidden="true">
+    <div class="aurora-blob b1"></div>
+    <div class="aurora-blob b2"></div>
+    <div class="aurora-blob b3"></div>
+  </div>
+
+  <!-- PARTICLE CANVAS -->
+  <canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><i class="fas fa-file-invoice-dollar"></i></div>
+      <div class="brand-text">
+        AR 101
+        <small>Piutang · ECL · NRV</small>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <button class="icon-btn" data-action="sound" title="Suara"><i class="fas fa-volume-high"></i></button>
+      <button class="icon-btn" data-action="theme" title="Tema"><i class="fas fa-moon"></i></button>
+      <button class="icon-btn" data-action="share" title="Bagikan"><i class="fas fa-share-nodes"></i></button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        ATC 2026 · Firhan Fahamzha · ITB Asia Malang
+      </div>
+      <h1 class="hero-title">
+        Account<br>
+        <span class="gradient">Receivable 101</span>
+      </h1>
+      <div class="hero-typing">
+        Kamu akan belajar tentang: <span class="typed">Piutang Usaha.</span>
+      </div>
+      <p class="hero-desc">
+        Dari faktur ke neraca — perjalanan seorang staf AR. Kuasai siklus piutang,
+        <em>Expected Credit Loss</em>, dan Nilai Realisasi Bersih lewat simulasi roleplay
+        yang bikin kamu benar-benar paham, bukan cuma hafal.
+      </p>
+      <div class="hero-cta">
+        <a href="materi.html" class="btn btn-primary" data-start>
+          <i class="fas fa-play"></i> Mulai Misi
+        </a>
+        <a href="#misi" class="btn btn-ghost">
+          <i class="fas fa-list-check"></i> Lihat Peta Misi
+        </a>
+      </div>
+      <div class="hero-meta">
+        <span><i class="fas fa-clock"></i> 90 menit</span>
+        <span><i class="fas fa-users"></i> Kelas XI SMK</span>
+        <span><i class="fas fa-award"></i> 5 Badge</span>
+        <span><i class="fas fa-mobile-screen"></i> Mobile friendly</span>
+      </div>
+    </section>
+
+    <!-- ROLEPLAY STRIP -->
+    <section class="container reveal">
+      <div class="roleplay-strip">
+        <div class="avatar"><i class="fas fa-user-tie"></i></div>
+        <div class="msg">
+          <div class="sender">📧 Dari Manajer Keuangan · PT Tekno Mandiri Jaya</div>
+          <div>
+            <strong>Selamat pagi, Staf AR baru!</strong> Hari ini kita tutup buku 31 Desember.
+            Saya butuh laporan piutang lengkap dengan analisis ECL dan NRV sebelum jam 5 sore.
+            Siap? — <em>Klik "Mulai Misi" di atas untuk masuk ke workspace.</em>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section class="stats container reveal">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-num" data-target="7" data-suffix="" data-decimals="0">0</div>
+          <div class="stat-label">Tahap Pembelajaran</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-target="5" data-suffix="" data-decimals="0">0</div>
+          <div class="stat-label">Modul Workspace</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-target="10" data-suffix="" data-decimals="0">0</div>
+          <div class="stat-label">Soal Kuis</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num" data-target="100" data-suffix="%" data-decimals="0">0</div>
+          <div class="stat-label">Interaktif</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROGRESS -->
+    <section class="progress-wrap container reveal">
+      <div class="progress-card">
+        <div class="ring-wrap">
+          <svg width="150" height="150" viewBox="0 0 150 150">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7c3aed"/>
+                <stop offset="100%" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+            <circle class="ring-bg" cx="75" cy="75" r="65"/>
+            <circle class="ring-fill" cx="75" cy="75" r="65"/>
+          </svg>
+          <div class="ring-text">
+            <div>
+              <div class="ring-pct">0%</div>
+              <div class="ring-sub">Progress</div>
+            </div>
+          </div>
+        </div>
+        <div class="progress-info">
+          <h3>Progress Belajarmu</h3>
+          <p>Selesaikan 4 misi utama untuk membuka sertifikat &amp; badge Master Piutang.</p>
+          <div class="progress-steps">
+            <span class="step-chip" data-step="materi"><i class="far fa-circle"></i> Materi</span>
+            <span class="step-chip" data-step="workspace"><i class="far fa-circle"></i> Workspace</span>
+            <span class="step-chip" data-step="kuis"><i class="far fa-circle"></i> Kuis</span>
+            <span class="step-chip" data-step="tantangan"><i class="far fa-circle"></i> Tantangan</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MISSIONS -->
+    <section class="missions container" id="misi">
+      <div class="section-head reveal">
+        <div class="kicker">// Peta Misi</div>
+        <h2>4 Misi + 1 Bonus</h2>
+        <p>Ikuti alurnya. Setiap misi membuka misi berikutnya — biar kamu nggak skip konsep penting.</p>
+      </div>
+
+      <div class="mission-grid">
+        <!-- Misi 1: Materi -->
+        <a class="mission-card reveal" data-mission="materi" data-url="materi.html">
+          <div class="mission-icon m-icon-1"><i class="fas fa-book-open-reader"></i></div>
+          <div class="mission-title">1 · Materi Interaktif</div>
+          <div class="mission-desc">Konsep piutang, klasifikasi, NRV, ECL, dan mekanisme jurnal — lewat slide yang bisa kamu navigasi sendiri.</div>
+          <div class="mission-foot">
+            <span class="mission-status">Belum dimulai</span>
+            <span class="mission-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+
+        <!-- Misi 2: Workspace -->
+        <a class="mission-card reveal" data-mission="workspace" data-url="workspace.html">
+          <div class="mission-icon m-icon-2"><i class="fas fa-briefcase"></i></div>
+          <div class="mission-title">2 · Workspace Roleplay</div>
+          <div class="mission-desc">Kamu jadi staf AR di PT Tekno Mandiri Jaya. Klasifikasi piutang, susun aging schedule, jurnal, hitung NRV — ekspor PDF portofolio.</div>
+          <div class="mission-foot">
+            <span class="mission-status">Belum dimulai</span>
+            <span class="mission-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+
+        <!-- Misi 3: Kuis -->
+        <a class="mission-card reveal" data-mission="kuis" data-url="kuis.html">
+          <div class="mission-icon m-icon-3"><i class="fas fa-bullseye"></i></div>
+          <div class="mission-title">3 · Kuis Cepat</div>
+          <div class="mission-desc">10 soal pilihan ganda dengan timer, progress ring, dan confetti saat lulus. Skor otomatis tersimpan.</div>
+          <div class="mission-foot">
+            <span class="mission-status">Belum dimulai</span>
+            <span class="mission-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+
+        <!-- Misi 4: Tantangan -->
+        <a class="mission-card reveal" data-mission="tantangan" data-url="tantangan.html">
+          <div class="mission-icon m-icon-4"><i class="fas fa-bolt"></i></div>
+          <div class="mission-title">4 · Tantangan Kilat</div>
+          <div class="mission-desc">2 mini games: Sortir Cepat (drag-drop klasifikasi) + Jurnal Rush (pilih akun Debit-Kredit). Kejar streak!</div>
+          <div class="mission-foot">
+            <span class="mission-status">Belum dimulai</span>
+            <span class="mission-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+
+        <!-- Bonus: Sertifikat -->
+        <div class="mission-card locked reveal" data-mission="sertifikat">
+          <div class="lock-badge"><i class="fas fa-lock"></i></div>
+          <div class="mission-icon m-icon-1" style="background: linear-gradient(135deg,#f59e0b,#fbbf24); box-shadow: 0 8px 20px rgba(245,158,11,0.3);">
+            <i class="fas fa-award"></i>
+          </div>
+          <div class="mission-title">5 · Sertifikat Misi</div>
+          <div class="mission-desc">Selesaikan 4 misi utama untuk membuka halaman sertifikat — bisa dicetak &amp; dibagikan ke LinkedIn.</div>
+          <div class="mission-foot">
+            <span class="mission-status">🔒 Terkunci</span>
+            <span class="mission-arrow"><i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES -->
+    <section class="badges container reveal">
+      <div class="section-head">
+        <div class="kicker">// Koleksi Badge</div>
+        <h2>Kumpulkan 5 Badge</h2>
+        <p>Setiap misi yang kamu tuntaskan membuka badge baru. Bisa banget jadi portofolio di CV kamu.</p>
+      </div>
+      <div class="badge-grid"><!-- diisi oleh JS --></div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>Dibuat dengan <span style="color: var(--rose)">♥</span> untuk <strong>Accounting Teaching Challenge 2026</strong> · Tema: Educational Media &amp; Digital Technology Integration</div>
+    <div class="wm"><i class="fas fa-user-pen"></i> Firhan Fahamzha · ITB Asia Malang</div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script src="js/core.js"></script>
+  <script src="js/hub.js"></script>
+</body>
+</html>
