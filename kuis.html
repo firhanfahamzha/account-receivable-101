@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis · Account Receivable 101</title>
+<meta name="description" content="Kuis interaktif 10 soal piutang, ECL, dan NRV.">
+<meta name="theme-color" content="#7c3aed">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="css/global.css">
+<link rel="stylesheet" href="css/kuis.css">
+</head>
+<body class="kuis-page">
+
+<div class="loader">
+  <div class="loader-mark">QUIZ MODE</div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-text">Menyiapkan soal...</div>
+</div>
+
+<div class="bg-aurora" aria-hidden="true">
+  <div class="aurora-blob b1"></div>
+  <div class="aurora-blob b2"></div>
+  <div class="aurora-blob b3"></div>
+</div>
+<canvas id="particles" aria-hidden="true"></canvas>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark"><i class="fas fa-bullseye"></i></div>
+    <div class="brand-text">
+      Kuis Cepat
+      <small>AR 101 · 10 Soal</small>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <a href="index.html" class="icon-btn" title="Hub"><i class="fas fa-house"></i></a>
+    <button class="icon-btn" data-action="sound" title="Suara"><i class="fas fa-volume-high"></i></button>
+    <button class="icon-btn" data-action="theme" title="Tema"><i class="fas fa-moon"></i></button>
+    <button class="icon-btn" data-action="share" title="Bagikan"><i class="fas fa-share-nodes"></i></button>
+  </div>
+</header>
+
+<main style="width:100%;display:flex;justify-content:center;padding:0 16px">
+  <div class="quiz-shell" id="quiz-stage"></div>
+</main>
+
+<footer class="footer" style="position:fixed;bottom:4px;left:0;right:0;padding:8px;border:none;background:transparent;margin:0;pointer-events:none;font-size:0.7rem;z-index:1">
+  <span class="wm"><i class="fas fa-user-pen"></i> Firhan Fahamzha · ATC 2026</span>
+</footer>
+
+<script src="js/core.js"></script>
+<script src="js/space.js"></script>
+<script src="js/kuis.js"></script>
+</body>
+</html>
