@@ -16,17 +16,14 @@
 </head>
 <body class="materi-page">
 
-<!-- Loader -->
 <div class="loader">
   <div class="loader-mark">ACCOUNT RECEIVABLE 101</div>
   <div class="loader-bar"><div class="loader-bar-fill"></div></div>
   <div class="loader-text">Menyiapkan materi...</div>
 </div>
 
-<!-- Slide progress top -->
 <div class="slide-progress" id="slideProgress"></div>
 
-<!-- Aurora bg -->
 <div class="bg-aurora" aria-hidden="true">
   <div class="aurora-blob b1"></div>
   <div class="aurora-blob b2"></div>
@@ -34,7 +31,6 @@
 </div>
 <canvas id="particles" aria-hidden="true"></canvas>
 
-<!-- Topbar -->
 <header class="topbar">
   <div class="brand">
     <div class="brand-mark"><i class="fas fa-book-open-reader"></i></div>
@@ -51,7 +47,6 @@
   </div>
 </header>
 
-<!-- Slides -->
 <div class="slides-wrap" id="slidesWrap">
 
   <!-- 01 TITLE -->
@@ -61,7 +56,7 @@
       <div class="kicker anim anim-2">// Modul 01 · Materi</div>
       <h1 class="anim anim-2">Kenali <span class="grad">Piutang</span><br>dari Hulu ke Hilir</h1>
       <p class="sub anim anim-3">
-        Sebelum kamu masuk ke workspace dan jadi staf AR, kuasai dulu konsepnya.
+        Sebelum masuk ke workspace dan jadi staf AR, kuasai dulu konsepnya.
         Setiap slide bisa kamu navigasi bebas.
       </p>
       <div class="cta-strip anim anim-4">
@@ -257,7 +252,7 @@
         <div class="box" style="border-left:4px solid var(--rose)">
           <h3 style="color:var(--rose)"><i class="fas fa-trash"></i> Write Off</h3>
           <p>Beban diakui <strong>saat</strong> piutang benar-benar dihapus.</p>
-          <div class="chip rose" style="margin-top:10px">Sederhana, tidak sesuai matching principle</div>
+          <div class="chip" style="margin-top:10px">Sederhana, tidak sesuai matching principle</div>
         </div>
         <div class="box" style="border-left:4px solid var(--violet)">
           <h3 style="color:var(--violet)"><i class="fas fa-layer-group"></i> Allowance</h3>
@@ -271,58 +266,82 @@
     </div>
   </section>
 
-  <!-- 09 JURNAL -->
+  <!-- 09 MEKANISME JURNAL — SIMULATOR -->
   <section class="slide" data-index="8">
     <div class="slide-inner">
       <div class="slide-head anim anim-1">
         <span class="slide-num">07</span>
-        <span class="slide-title">Mekanisme Jurnal</span>
+        <span class="slide-title">Mekanisme Jurnal <em>&amp; Simulator</em></span>
       </div>
-      <div class="table-wrap anim anim-2">
-        <table>
-          <thead>
-            <tr>
-              <th>Transaksi</th>
-              <th>Write Off</th>
-              <th>Allowance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td><strong>Bentuk Cadangan</strong></td><td><em style="color:var(--text-muted)">— Tidak ada —</em></td><td>Bad Debt Exp<br>Allowance</td></tr>
-            <tr><td><strong>Hapus Piutang</strong></td><td>Bad Debt Exp<br>AR</td><td>Allowance<br>AR</td></tr>
-            <tr><td><strong>Konfirmasi Kembali</strong></td><td>AR<br>Bad Debt Exp</td><td>AR<br>Allowance</td></tr>
-            <tr class="hl"><td><strong>Terima Kembali (Periode Sama)</strong></td><td>Kas<br>AR</td><td>Kas<br>AR</td></tr>
-            <tr><td><strong>Periode Beda tanpa Konfirmasi</strong></td><td>Kas<br>Income Summary</td><td>Kas<br>Allowance</td></tr>
-          </tbody>
-        </table>
+      <p class="lead anim anim-2">Pilih kasus di bawah, lihat perbedaan penjurnalan metode <strong>Write Off</strong> vs <strong>Allowance</strong> secara langsung.</p>
+
+      <div class="sim-controls anim anim-3">
+        <label for="sim-select"><i class="fas fa-list-ul"></i> Pilih Kasus:</label>
+        <select id="sim-select">
+          <option value="1">Pembentukan Cadangan</option>
+          <option value="2">Penghapusan Piutang</option>
+          <option value="3">Konfirmasi Penerimaan Kembali</option>
+          <option value="4">Penerimaan Kembali (Periode Sama)</option>
+          <option value="5">Periode Sama Tanpa Konfirmasi</option>
+          <option value="6">Periode Beda Tanpa Konfirmasi</option>
+        </select>
       </div>
-      <p class="lead anim anim-3">Detail lengkapnya akan kamu praktikkan di <strong>Workspace</strong> lewat Smart Journal Builder.</p>
+
+      <div class="sim-situation anim anim-3">
+        <div class="lbl"><i class="fas fa-file-alt"></i> Situasi</div>
+        <div class="txt" id="sim-sit-txt">—</div>
+      </div>
+
+      <div class="sim-journals anim anim-4">
+        <div class="sim-box writeoff">
+          <div class="sim-head"><i class="fas fa-trash"></i> Metode Write Off</div>
+          <div class="sim-body" id="sim-wo"></div>
+        </div>
+        <div class="sim-box allowance">
+          <div class="sim-head"><i class="fas fa-layer-group"></i> Metode Allowance</div>
+          <div class="sim-body" id="sim-al"></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- 10 PERSENTASE -->
+  <!-- 10 MENENTUKAN PERSENTASE + ROW AGING -->
   <section class="slide" data-index="9">
     <div class="slide-inner">
       <div class="slide-head anim anim-1">
         <span class="slide-num">08</span>
         <span class="slide-title">Menentukan Persentase Cadangan</span>
       </div>
-      <div class="grid-3 anim anim-2">
-        <div class="box">
-          <h3><i class="fas fa-percent"></i> % Penjualan</h3>
-          <p>% taksiran × total penjualan kredit. Cocok untuk <strong>income statement</strong>.</p>
-        </div>
-        <div class="box">
-          <h3><i class="fas fa-percent"></i> % Piutang</h3>
-          <p>% taksiran × saldo akhir piutang. Cocok untuk <strong>balance sheet</strong>.</p>
-        </div>
-        <div class="box glow">
-          <h3><i class="fas fa-chart-bar"></i> Analisis Umur</h3>
-          <p>Kelompokkan piutang per umur, beri % risiko berbeda. <strong>Paling akurat</strong> &amp; sesuai PSAK 109.</p>
-        </div>
+      <div class="table-wrap anim anim-2">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:30%">Metode Penaksiran</th>
+              <th style="width:40%">Penjelasan Akuntansi</th>
+              <th style="width:30%">Pendekatan Laporan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Persentase Penjualan</strong></td>
+              <td>% taksiran kerugian × total penjualan kredit periode berjalan.</td>
+              <td><span style="color:var(--emerald);font-weight:700">Income Statement</span></td>
+            </tr>
+            <tr>
+              <td><strong>Persentase Piutang</strong></td>
+              <td>% taksiran kerugian × total saldo akhir Piutang Usaha.</td>
+              <td><span style="color:var(--cyan);font-weight:700">Balance Sheet</span></td>
+            </tr>
+            <tr id="row-aging" class="interactive-row" title="Klik untuk membuka Kartu Umur Piutang">
+              <td><strong>Analisis Umur Piutang</strong><span class="badge-klik">Klik disini</span></td>
+              <td>Mengelompokkan piutang berdasarkan jatuh tempo. Makin lama menunggak, makin tinggi % risikonya.</td>
+              <td><span style="color:var(--amber);font-weight:700">Paling detail &amp; akurat</span></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="box anim anim-3">
-        <p><i class="fas fa-star" style="color:var(--amber)"></i> Contoh kebijakan ECL: <span class="mono-text">1%</span> belum jatuh tempo · <span class="mono-text">3%</span> 1–30 hari · <span class="mono-text">5%</span> 31–60 hari · <span class="mono-text">10%</span> &gt;60 hari · <span class="mono-text">100%</span> pailit.</p>
+      <div class="box glow anim anim-3">
+        <p><i class="fas fa-check-circle" style="color:var(--emerald)"></i> PSAK 109 (ECL) mendorong penggunaan <strong>analisis umur piutang</strong> sebagai pendekatan paling akurat untuk mengestimasi kerugian kredit ekspektasian.</p>
       </div>
     </div>
   </section>
@@ -424,7 +443,96 @@
 
 </div>
 
-<!-- Nav -->
+<!-- MODAL KARTU UMUR PIUTANG -->
+<div class="modal-overlay" id="modal-aging">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <h3>📊 Kartu Umur Piutang (Aging Schedule)</h3>
+        <div class="sub">Analisis jatuh tempo untuk menentukan besaran % cadangan kerugian per pelanggan.</div>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Tutup"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="table-wrap" style="margin-top:14px">
+      <table class="aging-tbl">
+        <thead>
+          <tr>
+            <th rowspan="2" style="text-align:left;vertical-align:middle">Pelanggan</th>
+            <th rowspan="2" style="text-align:right;vertical-align:middle">Total Saldo (Rp)</th>
+            <th rowspan="2" style="text-align:right;vertical-align:middle">Belum Jatuh Tempo</th>
+            <th colspan="4" style="text-align:center">Menunggak (Hari)</th>
+          </tr>
+          <tr>
+            <th class="amt">1 – 30</th>
+            <th class="amt">31 – 60</th>
+            <th class="amt">61 – 90</th>
+            <th class="amt">&gt; 90</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PT. XYZ</strong></td>
+            <td class="amt">13.000.000</td>
+            <td class="amt">8.000.000</td>
+            <td class="amt" style="color:var(--amber)">5.000.000</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+          </tr>
+          <tr>
+            <td><strong>CV. Abadi</strong></td>
+            <td class="amt">20.000.000</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+            <td class="amt" style="color:var(--rose)">15.000.000</td>
+            <td class="amt" style="color:var(--rose)">5.000.000</td>
+            <td class="amt">—</td>
+          </tr>
+          <tr>
+            <td><strong>Toko Maju</strong></td>
+            <td class="amt">7.000.000</td>
+            <td class="amt">7.000.000</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+            <td class="amt">—</td>
+          </tr>
+          <tr class="total-row">
+            <td>TOTAL SALDO</td>
+            <td class="amt">40.000.000</td>
+            <td class="amt">15.000.000</td>
+            <td class="amt">5.000.000</td>
+            <td class="amt">15.000.000</td>
+            <td class="amt">5.000.000</td>
+            <td class="amt">0</td>
+          </tr>
+          <tr class="pct-row">
+            <td colspan="2" style="text-align:right;font-style:italic">Persentase Kerugian:</td>
+            <td class="amt">1%</td>
+            <td class="amt">5%</td>
+            <td class="amt">10%</td>
+            <td class="amt">25%</td>
+            <td class="amt">50%</td>
+          </tr>
+          <tr class="est-row">
+            <td colspan="2" style="text-align:right;font-weight:800">Taksiran Kerugian (Rp):</td>
+            <td class="amt">150.000</td>
+            <td class="amt">250.000</td>
+            <td class="amt">1.500.000</td>
+            <td class="amt">1.250.000</td>
+            <td class="amt">0</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-total">
+      Total Cadangan (Allowance) = <strong>Rp 3.150.000</strong>
+    </div>
+  </div>
+</div>
+
 <nav class="slide-nav" id="slideNav">
   <button class="nav-btn" id="prevBtn" aria-label="Sebelumnya"><i class="fas fa-chevron-left"></i></button>
   <div class="dots" id="dotsWrap"></div>
